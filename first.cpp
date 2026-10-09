@@ -1,5 +1,6 @@
 //first.cpp
 
+#include <set>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -51,6 +52,7 @@ bool first::expand(){
         }
 
         productions = newProductions;
+        capacity = newCapacity;
     }
     
     return rc;
@@ -133,13 +135,78 @@ bool first::read() {
 
 //******************************************************************************
 // Laura Mendes
+// Performs First() on the production of a given char and return the resulting set
+set<char> first::findFirst(char S) {
+    
+    // A set of characters resulting from First()
+    set<char> setfirst;
+
+    // First of & (epsilon) or a terminal is the set containing itself
+    if (S == '&' || (islower(S))) {
+        setfirst.insert(S);
+
+    } else {
+
+        // Loops through all of the productions to find the given one
+        for (int i = 0; i < productionCount; i++) {
+            if (productions[i].left == S) {
+
+                // Checks if the first letter on the right side is lowercase (terminal)
+                if (islower(productions[i].right[0])) {
+
+                    // Checks if the letter is not already on the set
+                    if(!(setfirst.count(productions[i].right[0]))){
+                        // Insert the letter
+                        setfirst.insert(productions[i].right[0]);
+                    }   
+                // Checks if it is an & (epsilon) and inserts it
+                } else if (productions[i].right[0] == '&') {
+                    setfirst.insert('&');
+
+                // When it finds an uppercase letter (non-terminal)
+                } else { 
+                    set<char> nonTerminal; 
+                    // Recursively calls findFirst with the non-terminal and get its results
+                    nonTerminal = findFirst(productions[i].right[0]);
+                    // Stores it on the given production resulting set
+                    setfirst.insert(nonTerminal.begin(),nonTerminal.end());
+
+                }
+                
+            }
+        }
+    }
+
+    // Print the results 
+    printFirst(S,setfirst);
+
+
+    return setfirst;
+}
+
+//******************************************************************************
+// Laura Mendes
+// Prints the set of characters when findFirst is called
+void first::printFirst(char S, set<char> setfirst) {
+
+    cout << "First(" << S << ") = {" ;
+    // It will print each 
+    for (char c : setfirst) {
+        cout << c << ","; 
+    }
+    cout << "}" << endl;
+
+}
+
+//******************************************************************************
+// Laura Mendes
 int main(int argc, char* argv[]){
 
-    first();
-
     first grammar;
-
     grammar.read();
+
+    first.findFirst(S);
+    first.findFirst()
 
     return 0;
 }

@@ -38,10 +38,14 @@ class first {
         int terminalCount;
 
         char startSymbol;
+        set<char> setfirst; // The resulting set from First()
 
     public:
         first();
         ~first();
+
+        set<char> findFirst(char S); // Performs First() on a given production
+
         void setStartSymbol();
 
         bool expand(); //expands array when productions become full
@@ -49,6 +53,7 @@ class first {
         bool read(); //read the grammar
         bool insert(char left, string right); //insert the grammar to array
         void print(); //print the grammar
+        void printFirst(char S, set<char> setfirst); 
 
 
 };
