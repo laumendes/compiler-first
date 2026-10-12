@@ -136,49 +136,49 @@ bool first::read() {
 //******************************************************************************
 // Laura Mendes
 // Performs First() on the production of a given char and return the resulting set
-set<char> first::findFirst(char S) {
+set<char> first::findFirst(string a) {
     
-    // A set of characters resulting from First()
+    // The resulting set of characters from First()
     set<char> setfirst;
 
-    // First of & (epsilon) or a terminal is the set containing itself
-    if (S == '&' || (islower(S))) {
-        setfirst.insert(S);
+    for (int i = 0; i < a.size(); i++) {
 
-    } else {
-
-        // Loops through all of the productions to find the given one
-        for (int i = 0; i < productionCount; i++) {
-            if (productions[i].left == S) {
-
-                // Checks if the first letter on the right side is lowercase (terminal)
-                if (islower(productions[i].right[0])) {
-
-                    // Checks if the letter is not already on the set
-                    if(!(setfirst.count(productions[i].right[0]))){
-                        // Insert the letter
-                        setfirst.insert(productions[i].right[0]);
-                    }   
-                // Checks if it is an & (epsilon) and inserts it
-                } else if (productions[i].right[0] == '&') {
-                    setfirst.insert('&');
-
-                // When it finds an uppercase letter (non-terminal)
-                } else { 
-                    set<char> nonTerminal; 
-                    // Recursively calls findFirst with the non-terminal and get its results
-                    nonTerminal = findFirst(productions[i].right[0]);
-                    // Stores it on the given production resulting set
-                    setfirst.insert(nonTerminal.begin(),nonTerminal.end());
-
-                }
-                
+        // Checks if it is an lowercase (terminal)
+        if (islower(a[i])) {
+            // Checks if the letter is not on the set already
+            if(!(setfirst.count(a[i]))){
+                // Insert the letter
+                setfirst.insert(a[i]);
             }
-        }
+
+            break; // Found the first terminal, then terminates the loop
+
+        } else if (a[i] == '&') {
+            setfirst.insert('&'); // First of an epsilon is the epsilon itself
+        // When it finds an uppercase letter (non-terminal)
+        } else {
+            // Loops through all of the productions to find the given one
+            for (int j = 0; j < productionCount; j++) {
+                if (productions[j].left == a[i]) { 
+                    set<char> nonTerminal;
+                    // Recursively calls findFirst with the non-terminal RHS and get its results
+                    nonTerminal = findFirst(productions[j].right);
+                    setfirst.insert(nonTerminal.begin(),nonTerminal.end());
+           
+                }
+            }
+            // Checks if the non-terminal has any empty string
+            if ((setfirst.count('&'))){
+                // Remove epsilon from the First() set 
+                setfirst.erase('&');
+                // Terminates the loop looking for the next character on the given alpha
+                break; 
+            }
+        }    
     }
 
     // Print the results 
-    printFirst(S,setfirst);
+    printFirst(a,setfirst);
 
 
     return setfirst;
@@ -187,10 +187,10 @@ set<char> first::findFirst(char S) {
 //******************************************************************************
 // Laura Mendes
 // Prints the set of characters when findFirst is called
-void first::printFirst(char S, set<char> setfirst) {
+void first::printFirst(string a, set<char> setfirst) {
 
-    cout << "First(" << S << ") = {" ;
-    // It will print each 
+    cout << "First(" << a << ") = {" ;
+    // It will print each character on the set
     for (char c : setfirst) {
         cout << c << ","; 
     }
@@ -204,9 +204,7 @@ int main(int argc, char* argv[]){
 
     first grammar;
     grammar.read();
-
-    first.findFirst(S);
-    first.findFirst()
+    grammar.findFirst("A"); //Testando
 
     return 0;
 }

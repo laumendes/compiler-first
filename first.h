@@ -44,7 +44,7 @@ class first {
         first();
         ~first();
 
-        set<char> findFirst(char S); // Performs First() on a given production
+        set<char> findFirst(string a); // Performs First() on a given alpha
 
         void setStartSymbol();
 
@@ -53,7 +53,7 @@ class first {
         bool read(); //read the grammar
         bool insert(char left, string right); //insert the grammar to array
         void print(); //print the grammar
-        void printFirst(char S, set<char> setfirst); 
+        void printFirst(string a, set<char> setfirst); 
 
 
 };
